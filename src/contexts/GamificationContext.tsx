@@ -11,13 +11,23 @@ interface GamificationContextType {
   awardCustomXp: (xpAmount: number, coinAmount: number) => void;
 }
 
-const GamificationContext = createContext<GamificationContextType | undefined>(undefined);
+const DEFAULT_GAMIFICATION: GamificationContextType = {
+  xp: 0,
+  levelInfo: calculateLevel(0),
+  coins: 0,
+  awardHabitCompletion: () => {},
+  awardCustomXp: () => {},
+};
+
+const GamificationContext = createContext<GamificationContextType>(DEFAULT_GAMIFICATION);
 
 export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { profile, updateProfile } = useAuth();
+  const auth = useAuth();
+  const profile = auth?.profile;
+  const updateProfile = auth?.updateProfile;
 
-  const xp = profile?.xp ?? 450;
-  const coins = profile?.coins ?? 180;
+  const xp = profile?.xp ?? 0;
+  const coins = profile?.coins ?? 0;
   const levelInfo = calculateLevel(xp);
 
   const awardHabitCompletion = () => {
@@ -30,12 +40,14 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       triggerLevelUpConfetti();
     }
 
-    updateProfile({
-      xp: newXp,
-      coins: newCoins,
-      level: newLevelInfo.level,
-      total_completions: (profile?.total_completions ?? 0) + 1,
-    });
+    if (updateProfile) {
+      updateProfile({
+        xp: newXp,
+        coins: newCoins,
+        level: newLevelInfo.level,
+        total_completions: (profile?.total_completions ?? 0) + 1,
+      });
+    }
   };
 
   const awardCustomXp = (xpAmount: number, coinAmount: number) => {
@@ -48,11 +60,13 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       triggerLevelUpConfetti();
     }
 
-    updateProfile({
-      xp: newXp,
-      coins: newCoins,
-      level: newLevelInfo.level,
-    });
+    if (updateProfile) {
+      updateProfile({
+        xp: newXp,
+        coins: newCoins,
+        level: newLevelInfo.level,
+      });
+    }
   };
 
   return (
@@ -72,8 +86,5 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 export const useGamification = () => {
   const context = useContext(GamificationContext);
-  if (!context) {
-    throw new Error('useGamification must be used within a GamificationProvider');
-  }
-  return context;
+  return context || DEFAULT_GAMIFICATION;
 };
