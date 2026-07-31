@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Sparkles, Trophy, Quote as QuoteIcon, RefreshCw } from 'lucide-react';
+import { Trophy, Quote as QuoteIcon, RefreshCw, Calendar as CalendarIcon } from 'lucide-react';
 import { useGamification } from '../../contexts/GamificationContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { BATKITTY_QUOTES } from '../../utils/xpUtils';
+import { format } from 'date-fns';
 
 export const GamificationHeader: React.FC = () => {
   const { profile } = useAuth();
-  const { xp, coins, levelInfo } = useGamification();
+  const { levelInfo } = useGamification();
   const [quoteIndex, setQuoteIndex] = useState(0);
 
+  const todayFormatted = format(new Date(), 'EEEE, MMMM d, yyyy');
   const currentQuote = BATKITTY_QUOTES[quoteIndex];
 
   const cycleQuote = () => {
@@ -37,6 +39,10 @@ export const GamificationHeader: React.FC = () => {
           </div>
 
           <div className="flex flex-col">
+            <div className="flex items-center gap-2 text-[11px] font-bold text-[#FF69B4] font-mono mb-0.5">
+              <CalendarIcon className="w-3.5 h-3.5" />
+              <span>{todayFormatted}</span>
+            </div>
             <h2 className="text-xl lg:text-2xl font-extrabold text-white flex items-center gap-2">
               <span>Welcome back, {profile?.full_name || 'Gotham Hero'}!</span>
               <span className="animate-bounce text-lg">🎀</span>
@@ -60,7 +66,7 @@ export const GamificationHeader: React.FC = () => {
             <button
               onClick={cycleQuote}
               title="Next Motivational Quote"
-              className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-[#F4D03F] transition-colors shrink-0"
+              className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-[#F4D03F] transition-colors shrink-0 cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
             </button>

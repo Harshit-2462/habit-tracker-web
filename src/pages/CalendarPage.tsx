@@ -14,6 +14,13 @@ export const CalendarPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
+
+    const handleHabitsUpdated = () => {
+      loadData();
+    };
+
+    window.addEventListener('batkitty_habits_updated', handleHabitsUpdated);
+    return () => window.removeEventListener('batkitty_habits_updated', handleHabitsUpdated);
   }, [user]);
 
   const loadData = async () => {
@@ -41,12 +48,17 @@ export const CalendarPage: React.FC = () => {
           <span className="text-[#FF69B4] text-base">🎀</span>
         </h2>
         <p className="text-xs text-slate-400">
-          Visualize year-long streak intensity and complete completion feed
+          Visualize year-long streak intensity and interactive 365-day habit completion matrix
         </p>
       </div>
 
       {/* Heatmap Contribution Matrix */}
-      <HeatmapCalendar logs={logs} />
+      <HeatmapCalendar
+        logs={logs}
+        habits={habits}
+        userId={user?.id}
+        onLogsUpdated={loadData}
+      />
 
       {/* Activity Timeline Log Feed */}
       <GlassCard glowColor="purple" className="p-6">
@@ -63,7 +75,7 @@ export const CalendarPage: React.FC = () => {
           </div>
         ) : logs.length === 0 ? (
           <p className="text-xs text-slate-400 italic text-center py-6">
-            No activity logged yet. Check off habits on your Dashboard!
+            No activity logged yet. Check off habits on your Dashboard or 365-day grid!
           </p>
         ) : (
           <div className="relative pl-6 space-y-4 border-l border-[#FF69B4]/30">
@@ -78,7 +90,7 @@ export const CalendarPage: React.FC = () => {
                   <span className="font-bold text-slate-100 font-mono">
                     {getHabitTitle(log.habit_id)}
                   </span>
-                  <span className="ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">
+                  <span className="ml-2 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold font-mono">
                     {log.status}
                   </span>
                 </div>
