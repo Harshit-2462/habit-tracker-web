@@ -1,16 +1,38 @@
-import React, { useState } from 'react';
-import { Trophy, Quote as QuoteIcon, RefreshCw, Calendar as CalendarIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Trophy, Quote as QuoteIcon, RefreshCw, Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { useGamification } from '../../contexts/GamificationContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { BATKITTY_QUOTES } from '../../utils/xpUtils';
-import { format } from 'date-fns';
+
+const getIndianFormattedDateTime = () => {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-IN', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+  const timeStr = now.toLocaleTimeString('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+  return `${dateStr} • ${timeStr} IST`;
+};
 
 export const GamificationHeader: React.FC = () => {
   const { profile } = useAuth();
   const { levelInfo } = useGamification();
   const [quoteIndex, setQuoteIndex] = useState(0);
+  const [liveIndianTime, setLiveIndianTime] = useState(getIndianFormattedDateTime());
 
-  const todayFormatted = format(new Date(), 'EEEE, MMMM d, yyyy');
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveIndianTime(getIndianFormattedDateTime());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const currentQuote = BATKITTY_QUOTES[quoteIndex];
 
   const cycleQuote = () => {
@@ -39,9 +61,9 @@ export const GamificationHeader: React.FC = () => {
           </div>
 
           <div className="flex flex-col">
-            <div className="flex items-center gap-2 text-[11px] font-bold text-[#FF69B4] font-mono mb-0.5">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#FF69B4] font-mono mb-0.5">
               <CalendarIcon className="w-3.5 h-3.5" />
-              <span>{todayFormatted}</span>
+              <span>{liveIndianTime}</span>
             </div>
             <h2 className="text-xl lg:text-2xl font-extrabold text-white flex items-center gap-2">
               <span>Welcome back, {profile?.full_name || 'Gotham Hero'}!</span>

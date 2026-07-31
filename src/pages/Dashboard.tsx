@@ -11,7 +11,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useGamification } from '../contexts/GamificationContext';
 import { getTodayFormatted } from '../utils/dateUtils';
 import { Gift, Plus } from 'lucide-react';
-import { DailyRewardModal } from '../components/gamification/DailyRewardModal';
+import { DailyRewardModal, isRewardClaimedToday } from '../components/gamification/DailyRewardModal';
 
 interface DashboardProps {
   onOpenNewHabit: () => void;
@@ -23,17 +23,33 @@ export const Dashboard: React.FC<DashboardProps> = ({ onOpenNewHabit }) => {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [isRewardOpen, setIsRewardOpen] = useState(false);
+  const [crateClaimedToday, setCrateClaimedToday] = useState(false);
+
+  const userId = user?.id || 'demo-user-123';
 
   useEffect(() => {
     loadHabits();
+    checkCrateStatus();
 
     const handleHabitsUpdated = () => {
       loadHabits();
     };
 
+    const handleCrateClaimed = () => {
+      checkCrateStatus();
+    };
+
     window.addEventListener('batkitty_habits_updated', handleHabitsUpdated);
-    return () => window.removeEventListener('batkitty_habits_updated', handleHabitsUpdated);
+    window.addEventListener('batkitty_crate_claimed', handleCrateClaimed);
+    return () => {
+      window.removeEventListener('batkitty_habits_updated', handleHabitsUpdated);
+      window.removeEventListener('batkitty_crate_claimed', handleCrateClaimed);
+    };
   }, [user]);
+
+  const checkCrateStatus = () => {
+    setCrateClaimedToday(isRewardClaimedToday(userId));
+  };
 
   const loadHabits = async () => {
     setLoading(true);
@@ -46,7 +62,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onOpenNewHabit }) => {
     const dateStr = getTodayFormatted();
     const isNowCompleted = await habitService.toggleHabitLog(
       habit.id,
-      user?.id || 'demo-user-123',
+      userId,
       dateStr,
       'completed'
     );
@@ -87,8 +103,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onOpenNewHabit }) => {
             Active Hero Streak
           </h3>
           <StreakFlame
-            currentStreak={profile?.current_streak || 0}
-            longestStreak={profile?.longest_streak || 0}
+            currentStreak={profile?.current_streak ?? 0}
+            longestStreak={profile?.longest_streak ?? 0}
           />
           <p className="text-xs text-slate-400 mt-4 leading-relaxed">
             Maintain your daily streak to unlock the <strong>Dark Knight Legend</strong> badge & bonus coins!
@@ -102,16 +118,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ onOpenNewHabit }) => {
               Daily Supply Crate
             </h3>
             <p className="text-xs text-slate-300 mb-4">
-              Log in daily to claim free XP & Bat-Belt coins!
+              {crateClaimedToday
+                ? 'You claimed today’s mystery crate! Next supply crate ready tomorrow.'
+                : 'Log in daily to claim free XP & Bat-Belt coins!'}
             </p>
           </div>
           <NeonButton
-            variant="purple"
+            variant={crateClaimedToday ? 'pink' : 'purple'}
             size="md"
             icon={<Gift className="w-4 h-4" />}
             onClick={() => setIsRewardOpen(true)}
           >
-            Claim Daily Crate
+            {crateClaimedToday ? '🎁 Claimed (Ready Tomorrow)' : 'Claim Daily Crate'}
           </NeonButton>
         </GlassCard>
       </div>
