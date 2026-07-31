@@ -4,6 +4,14 @@ A full-stack, responsive, and gamified Habit Tracker web application fusing **Go
 
 ---
 
+## 👨‍💻 Developer & Author
+
+**Designed & Developed by Harshit Upadhya** 🦇🎀
+- **GitHub Profile**: [https://github.com/Harshit-2462](https://github.com/Harshit-2462)
+- **Project Repository**: [https://github.com/Harshit-2462/habit-tracker-web](https://github.com/Harshit-2462/habit-tracker-web)
+
+---
+
 ## 🎨 Theme & Aesthetic Highlights
 
 - **Dark Gotham Palette**: Deep obsidian black (`#0a0a0d`), slate card surfaces, Bat-Signal yellow (`#F4D03F`), and Gotham violet (`#9B51E0`).
