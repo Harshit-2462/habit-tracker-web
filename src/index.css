@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-dark: #0a0a0d;
+    --bg-card: #121319;
+    --bg-card-hover: #191b24;
+    --bat-yellow: #F4D03F;
+    --kitty-pink: #FF69B4;
+    --kitty-pink-soft: #FFB6C1;
+    --gotham-purple: #9B51E0;
+    --gotham-cyan: #00E5FF;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: #e2e8f0;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+}
+
+/* Custom Batman Skyline & Hello Kitty Particle Background */
+.bg-gotham-skyline {
+  background-color: #08080b;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(155, 81, 224, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 85% 20%, rgba(255, 105, 180, 0.12) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(10, 10, 13, 0.85), #0a0a0d);
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+  background: rgba(18, 19, 25, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-3px);
+  background: rgba(25, 27, 36, 0.85);
+  border-color: rgba(255, 105, 180, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(255, 105, 180, 0.15), 0 0 20px rgba(244, 208, 63, 0.1);
+}
+
+/* Glowing Neon Buttons */
+.neon-btn-pink {
+  background: linear-gradient(135deg, #FF69B4 0%, #D81B60 100%);
+  box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+  transition: all 0.25s ease-in-out;
+}
+
+.neon-btn-pink:hover {
+  box-shadow: 0 0 25px rgba(255, 105, 180, 0.7), 0 0 10px rgba(255, 182, 193, 0.9);
+  transform: scale(1.02);
+}
+
+.neon-btn-yellow {
+  background: linear-gradient(135deg, #F4D03F 0%, #D4AC0D 100%);
+  color: #0a0a0d;
+  box-shadow: 0 0 15px rgba(244, 208, 63, 0.4);
+  transition: all 0.25s ease-in-out;
+}
+
+.neon-btn-yellow:hover {
+  box-shadow: 0 0 25px rgba(244, 208, 63, 0.8);
+  transform: scale(1.02);
+}
+
+.neon-btn-purple {
+  background: linear-gradient(135deg, #9B51E0 0%, #6C5CE7 100%);
+  box-shadow: 0 0 15px rgba(155, 81, 224, 0.4);
+  transition: all 0.25s ease-in-out;
+}
+
+.neon-btn-purple:hover {
+  box-shadow: 0 0 25px rgba(155, 81, 224, 0.7);
+  transform: scale(1.02);
+}
+
+/* Bat Signal & Kitty Bow Glow Animations */
+@keyframes batPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(244, 208, 63, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(244, 208, 63, 0.9));
+  }
+}
+
+.animate-bat-pulse {
+  animation: batPulse 3s infinite ease-in-out;
+}
+
+@keyframes kittyBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-kitty-bounce {
+  animation: kittyBounce 2s infinite ease-in-out;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0d;
+}
+::-webkit-scrollbar-thumb {
+  background: #252836;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF69B4;
+}
